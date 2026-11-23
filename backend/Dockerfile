@@ -17,6 +17,8 @@ FROM base AS test
 
 COPY pyproject.toml ./
 COPY app ./app
+COPY alembic.ini ./
+COPY migrations ./migrations
 COPY tests ./tests
 
 RUN pip install --no-build-isolation ".[dev]"
@@ -26,6 +28,8 @@ FROM base AS runtime
 
 COPY pyproject.toml ./
 COPY --chown=runback:runback app ./app
+COPY --chown=runback:runback alembic.ini ./
+COPY --chown=runback:runback migrations ./migrations
 
 RUN pip install --no-build-isolation .
 

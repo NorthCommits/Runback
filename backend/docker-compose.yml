@@ -9,6 +9,8 @@ services:
     ports:
       - "8000:8000"
     depends_on:
+      migrate:
+        condition: service_completed_successfully
       postgres:
         condition: service_healthy
     healthcheck:
@@ -22,6 +24,20 @@ services:
       context: .
       target: runtime
     command: ["python", "-m", "app.workers.main"]
+    environment:
+      RUNBACK_DATABASE_SSL: ${RUNBACK_DATABASE_SSL:-false}
+      RUNBACK_DATABASE_URL: ${RUNBACK_DATABASE_URL:-postgresql://runback:runback@postgres:5432/runback}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+
+  migrate:
+    build:
+      context: .
+      target: runtime
+    command: ["alembic", "upgrade", "head"]
     environment:
       RUNBACK_DATABASE_SSL: ${RUNBACK_DATABASE_SSL:-false}
       RUNBACK_DATABASE_URL: ${RUNBACK_DATABASE_URL:-postgresql://runback:runback@postgres:5432/runback}
