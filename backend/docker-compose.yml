@@ -1,0 +1,47 @@
+services:
+  api:
+    build:
+      context: .
+      target: runtime
+    environment:
+      RUNBACK_DATABASE_SSL: ${RUNBACK_DATABASE_SSL:-false}
+      RUNBACK_DATABASE_URL: ${RUNBACK_DATABASE_URL:-postgresql://runback:runback@postgres:5432/runback}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health/live')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  worker:
+    build:
+      context: .
+      target: runtime
+    command: ["python", "-m", "app.workers.main"]
+    environment:
+      RUNBACK_DATABASE_SSL: ${RUNBACK_DATABASE_SSL:-false}
+      RUNBACK_DATABASE_URL: ${RUNBACK_DATABASE_URL:-postgresql://runback:runback@postgres:5432/runback}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: runback
+      POSTGRES_PASSWORD: runback
+      POSTGRES_USER: runback
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U runback -d runback"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
