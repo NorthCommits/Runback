@@ -1,0 +1,35 @@
+{
+  "schema_version": "v1",
+  "environment_id": "00000000-0000-0000-0000-000000000001",
+  "idempotency_key": "sample-trace",
+  "traces": [
+    {
+      "trace_id": "00000000-0000-0000-0000-000000000002",
+      "source_framework": "openai-agents",
+      "started_at": "2026-11-23T12:00:00Z",
+      "status": "completed",
+      "spans": [
+        {
+          "span_id": "00000000-0000-0000-0000-000000000003",
+          "name": "root-agent",
+          "kind": "agent",
+          "start_time": "2026-11-23T12:00:00Z",
+          "status": "completed",
+          "input": {
+            "api_key": "should-not-persist",
+            "question": "hello"
+          }
+        },
+        {
+          "span_id": "00000000-0000-0000-0000-000000000004",
+          "parent_span_id": "00000000-0000-0000-0000-000000000003",
+          "name": "tool-call",
+          "kind": "tool",
+          "start_time": "2026-11-23T12:00:01Z",
+          "end_time": "2026-11-23T12:00:02Z",
+          "status": "completed"
+        }
+      ]
+    }
+  ]
+}

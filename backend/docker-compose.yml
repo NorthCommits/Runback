@@ -13,6 +13,8 @@ services:
         condition: service_completed_successfully
       postgres:
         condition: service_healthy
+    volumes:
+      - payload_data:/var/lib/runback/payloads
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health/live')"]
       interval: 10s
@@ -61,3 +63,4 @@ services:
 
 volumes:
   postgres_data:
+  payload_data:

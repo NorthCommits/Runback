@@ -11,7 +11,7 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install --no-install-recommends -y ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN pip install --no-cache-dir --timeout 60 "setuptools>=75"
-RUN groupadd --gid 10001 runback && useradd --uid 10001 --gid 10001 --create-home runback
+RUN groupadd --gid 10001 runback && useradd --uid 10001 --gid 10001 --create-home runback && mkdir -p /var/lib/runback/payloads && chown -R runback:runback /var/lib/runback
 
 FROM base AS test
 
